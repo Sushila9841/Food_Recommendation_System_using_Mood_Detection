@@ -1,0 +1,36 @@
+{% extends "dashboard/base.html" %}
+
+{% block container %}
+<div class="">
+    <div class="flex items-center h-10 intro-y">
+        <h2 class="mr-5 text-lg font-medium truncate pb-8">{{ title }}</h2>
+    </div>
+    <table id="foodCategoryTable" class="display">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in food_categories %}
+            <tr>
+                <td>{{ category.id }}</td>
+                <td>{{ category.name }}</td>
+                <td>
+                    <a href="/dashboard/food/category/edit/{{ category.id }}"><i class="fa-solid fa-pen-to-square" style="color:blue;"></i></a>
+                    <a href="/dashboard/food/category/delete/{{ category.id }}"><i class="fa-solid fa-trash-can" style="color:red;"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#foodCategoryTable').DataTable();
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'frontend/base.html' %}
+
+{% block content %}
+<h1 class="text-center text-[30px] font-bold">{{blog.title}}</h1>
+</h1>
+<div class="featured_image">
+    <img src="{{blog.image.url}}" class="w-[700px] mx-auto rounded-md mt-5" alt="blog image">
+
+</div>
+<div class="content w-[70%] mx-auto text-[20px] mt-5">
+    
+    <p class="text-center font-bold mt-5">
+        <!-- ckeditor -->
+        {{blog.content|safe}}
+    </p>
+</div>
+
+{% endblock content %}

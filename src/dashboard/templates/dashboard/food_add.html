@@ -1,0 +1,39 @@
+{% extends "dashboard/base.html" %}
+{% load tailwind_filters %}
+
+
+{% block container %}
+
+<div class="grid mb-4 pb-10 px-8 mx-4 rounded-3xl bg-gray-100 border-4 border-gray-400">
+    <div class="grid grid-cols-12 gap-6">
+        <div class="grid grid-cols-12 col-span-12 gap-6 xxl:col-span-9">
+            <div class="col-span-12 mt-8">
+                <div class="flex items-center h-10 intro-y">
+                    <h2 class="mr-5 text-lg font-medium truncate">ADD FOOD</h2>
+                </div>
+                <!-- tailwend error message -->
+                {% if errors %}
+                {% for message in messages %}
+                <div class="alert alert-danger" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                
+              <form action="" method="post"  enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Submit
+              </form>
+            </div>
+            <div class="col-span-12 mt-5">
+            </div>
+            <div class="col-span-12 mt-5">
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "dashboard/base.html" %}
+
+{% block container %}
+<div class="">
+    <div class="flex items-center h-10 intro-y">
+        <h2 class="mr-5 text-lg font-medium truncate pb-8">{{ title }}</h2>
+    </div>
+    <table id="foodTable" class="display">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Name</th>
+                <th>Image</th>
+                <th>URL</th>
+                <th>Actions</th>
+                <!-- Add more table headers for additional food attributes -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for food in foods %}
+            <tr>
+                <td>{{ food.id }}</td>
+                <td>{{ food.food_category.name }}</td>
+                <td>{{ food.name }}</td>
+                <td>
+                    <img src="{{food.image.url}}" alt="{{ food.name }}" width="100" height="100">
+                </td>
+                <td><a href="{{ food.url }}" target="_blank">{{ food.url }}</a></td>
+                <!-- Add more table data cells for additional food attributes -->
+                <td>
+                    <a href="/dashboard/food/edit/{{ food.id }}"><i class="fa-solid fa-pen-to-square" style="color:blue;"></i></a>
+                    <a href="/dashboard/food/delete/{{ food.id }}"><i class="fa-solid fa-trash-can" style="color:red;"></i></a>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#foodTable').DataTable();
+    });
+</script>
+{% endblock %}

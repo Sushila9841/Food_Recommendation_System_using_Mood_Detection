@@ -1,0 +1,163 @@
+{% extends 'frontend/base.html' %}
+{% load tailwind_filters %}
+
+{% block content %}
+
+<style>
+    .mood-detection-container {
+        background-image: url('https://media4.giphy.com/media/ITRemFlr5tS39AzQUL/200w.gif');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+
+    #video, #photo {
+        border-radius: 15px;
+        box-shadow: 0px 0px 15px rgba(0,0,0,0.2);
+    }
+
+    canvas {
+        display: none;
+    }
+</style>
+
+<div class="min-h-screen flex justify-center items-center mood-detection-container">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-3/4">
+        <h2 class="text-center text-3xl mb-4 font-bold">Mood Detection System</h2>
+        
+        <form method="POST" action="" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <div class="flex justify-center">
+                <video id="video" autoplay></video>
+            </div>
+
+            <div class="flex justify-center">
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <div class="flex justify-between">
+                <button id="startbutton1" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg">Take Photo</button>
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">Predict</button>
+            </div>
+
+            <input type="file" name="image_file" id="image_file" class="hidden">
+            
+            <div class="flex justify-center">
+                <img id="photo" name="photo" alt="The screen capture will appear here." class="hidden">
+            </div>
+        </form>
+    </div>
+              
+
+                          <script>
+                            (function() {
+
+var width = 320;    
+var height = 0;    
+var streaming = false;  
+var video = null;
+var canvas = null;
+var photo = null;
+var startbutton1 = null;
+var image_file = null;
+
+function startup() {
+  video = document.getElementById('video');
+  canvas = document.getElementById('canvas');
+  photo = document.getElementById('photo');
+  startbutton1 = document.getElementById('startbutton1');
+  image_file = document.getElementById('image_file');
+
+  navigator.mediaDevices.getUserMedia({video: true, audio: false})
+  .then(function(stream) {
+    video.srcObject = stream;
+    video.play();
+  })
+  .catch(function(err) {
+    console.log("An error occurred: " + err);
+  });
+
+  video.addEventListener('canplay', function(ev){
+    if (!streaming) {
+      height = video.videoHeight / (video.videoWidth/width);
+
+
+      if (isNaN(height)) {
+        height = width / (4/3);
+      }
+
+      video.setAttribute('width', width);
+      video.setAttribute('height', height);
+      canvas.setAttribute('width', width);
+      canvas.setAttribute('height', height);
+      streaming = true;
+    }
+  }, false);
+
+  startbutton1.addEventListener('click', function(ev){
+    takepicture();
+    ev.preventDefault();
+  }, false);
+
+  clearphoto();
+}
+
+function clearphoto() {
+  var context = canvas.getContext('2d');
+  context.fillStyle = "#AAA";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  var data = canvas.toDataURL('image/png');
+  photo.setAttribute('src', data);
+}
+
+function takepicture() {
+  var context = canvas.getContext('2d');
+  if (width && height) {
+    canvas.width = width;
+    canvas.height = height;
+    context.drawImage(video, 0, 0, width, height);
+
+    var dataURL = canvas.toDataURL('image/png');
+
+            var blob = dataURItoBlob(dataURL);
+
+            
+            // Create a File object from the blob
+            var file = new File([blob], 'captured_image.png', { type: 'image/png' });
+           
+            var fileList = new DataTransfer();
+            fileList.items.add(file);
+            // Set the value of the 'image' input field to the File object
+            image_file.files = fileList.files;
+  } else {
+    clearphoto();
+  }
+}
+
+function dataURItoBlob(dataURI) {
+    var byteString = atob(dataURI.split(',')[1]);
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
+}
+
+window.addEventListener('load', startup, false);
+})();
+                          </script>
+                        </div>
+
+                    <div class="img  pull-center" >                                            
+                    <img style="display: none;" id="photo" name="photo" alt="The screen capture will appear in this box.">                   
+          </form>
+      </div>                
+    </div>  
+ </div>
+</div>
+
+{% endblock content %}

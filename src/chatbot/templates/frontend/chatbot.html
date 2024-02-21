@@ -1,0 +1,93 @@
+{% extends 'frontend/base.html' %}
+
+{% block content %}
+<!-- Animated Burger Chatbot -->
+<div class="burger-chatbot" onclick="toggleChatbot();">
+    <div class="burger">
+        <div class="top-bun">
+            <div class="eye left">
+                <div class="eyebrow"></div>
+            </div>  <!-- Moved the eyes to top bun -->
+            <div class="eye right">
+                <div class="eyebrow"></div>
+            </div>
+        </div>
+        <div class="lettuce"></div>
+        <div class="tomato">
+            <div class="smile"></div>   <!-- Added smile to tomato -->
+        </div>
+        <div class="cheese"></div>
+        <div class="patty">
+            <div class="smile"></div>   <!-- Added smile to patty -->
+        </div>
+        <div class="bottom-bun"></div>
+        <div class="arm left"></div>
+        <div class="arm right"></div>
+        <div class="leg left"></div>
+        <div class="leg right"></div>
+    </div>
+</div>
+
+<!-- Chatbot Interface -->
+<div id="chatbot-interface" class="flex">
+    <div id="chat-display" class="chat-bg"></div>
+    <input type="text" id="user-input" placeholder="Type a message..." onkeydown="handleEnterKey(event)" onclick="event.stopPropagation();">
+    <button onclick="submitMessage()">Send</button>
+</div>
+
+<script>
+    function toggleChatbot() {
+        var chatInterface = document.getElementById('chatbot-interface');
+        if (chatInterface.style.display === "none" || chatInterface.style.display === "") {
+            chatInterface.style.display = "block";
+            chatInterface.classList.add('open');
+            document.addEventListener('click', closeChatOnOutsideClick);
+        } else {
+            chatInterface.style.display = "none";
+            chatInterface.classList.remove('open');
+            document.removeEventListener('click', closeChatOnOutsideClick);
+        }
+    }
+
+    function closeChatOnOutsideClick(event) {
+        if (!event.target.closest('.burger-chatbot')) {
+            var chatInterface = document.getElementById('chatbot-interface');
+            chatInterface.style.display = "none";
+            document.removeEventListener('click', closeChatOnOutsideClick);
+        }
+    }
+
+    function handleEnterKey(event) {
+        if (event.key === "Enter") {
+            submitMessage();
+        }
+    }
+
+    function submitMessage() {
+        var userInput = document.getElementById('user-input');
+        var chatDisplay = document.getElementById('chat-display');
+
+        // Append user's message
+        var userDiv = document.createElement('div');
+        userDiv.className = 'user-message';
+        userDiv.textContent = userInput.value;
+        chatDisplay.appendChild(userDiv);
+
+        // Simulated AI response (just reversing the user's text for this example)
+        var aiResponse = userInput.value.split('').reverse().join('');
+
+        setTimeout(function() {
+            var aiDiv = document.createElement('div');
+            aiDiv.className = 'ai-message';
+            aiDiv.textContent = aiResponse;
+            chatDisplay.appendChild(aiDiv);
+            chatDisplay.scrollTop = chatDisplay.scrollHeight; // Scroll to show latest message
+        }, 1000);
+
+        // Clear user input
+        userInput.value = "";
+    }
+</script>
+
+
+{% endblock content %}
